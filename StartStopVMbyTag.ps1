@@ -38,8 +38,8 @@
 
   3. 4 optional but recommended automation variables, that points to default execution parameters if not set.
      Those variable are used for flexibility only since if the parameters are specified, they are not used/called at all.
-        a."Default ARM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ARM (cf.[1])
-        b."Default ASM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ASM (cf.[2])
+        a."Default ARM Connection", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ARM (cf.[1])
+        b."Default ASM Connection", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ASM (cf.[2])
         c."Default Subscription ID", a string storing the default subscription ID used if not subscription ID is specified at execution
         d."Default Subscription Name", a string storing the default subscription name used if not subscription name is specified at execution (it must corresponds to the subscription ID above)
 
@@ -94,7 +94,6 @@ param(
 )
 
 $VERSION = "0.9.9 - Beta"
-Write-Warning "WARNING - THIS SAMPLE SCRIPT CODE SHOULD BE TESTED TO ENSURE IT FITS YOUR ENVIRONNEMENT - SEE DISCLAIMER"
 
 Try
 {
@@ -132,7 +131,7 @@ Try
     write-output "Specified classic connection asset name: [$azureASMConnectionName]"
     if($azureASMConnectionName -eq "Use *Default ASM Connection* asset")
     {
-        # By default, look for "Default Classic Credential" asset and if the associated certficaet exists, otherwise, set it to $null
+        # By default, look for "Default Classic Credential" asset and if the associated certficate exists, otherwise, set it to $null
 
         $azureASMConnectionName = Get-AutomationVariable -Name "Default ASM Connection"
         $azureASMConnection = Get-AutomationConnection -Name $azureASMConnectionName
@@ -207,7 +206,7 @@ Try
     }
     else
     {
-        Write-Output "Connection with ASM for subscription $azureSubscriptionName succesful."
+        Write-Output "Connection with ASM for subscription $azureSubscriptionName successful."
     }
     
     #Connect to environnements using ARM
@@ -220,7 +219,7 @@ Try
     }
     else
     {
-        Write-Output "Connection with ARM for subscription $azureSubscriptionName succesful."
+        Write-Output "Connection with ARM for subscription $azureSubscriptionName successful."
     }
 
     # Get a list of all virtual machines in subscription
@@ -383,10 +382,7 @@ Try
                     if($VirtualMachine.ResourceType -eq "Microsoft.ClassicCompute/virtualMachines")
                     {
                         $classicVM = $ClassicVMList | where Name -eq $VirtualMachine.Name
-                        #AssertClassicVirtualMachinePowerState -VirtualMachine $classicVM -DesiredState $DesiredState -Simulate $Simulate
-                        #Start of assert classic replace
-                        # If should be started and isn't, start VM
-	                    if($DesiredState -eq "Started" -and $VirtualMachine.PowerState -notmatch "Started|Starting")
+  	                    if($DesiredState -eq "Started" -and $VirtualMachine.PowerState -notmatch "Started|Starting")
 	                    {
 		                    if($Simulate)
                             {
@@ -397,8 +393,7 @@ Try
                                 Write-Output "[$($VirtualMachine.Name)]: Starting VM"
                                 $VirtualMachine | Start-AzureVM
                             }
-	                    }
-		
+	                    }	
 	                    # If should be stopped and isn't, stop VM
 	                    elseif($DesiredState -eq "StoppedDeallocated" -and $VirtualMachine.PowerState -ne "Stopped")
 	                    {
@@ -412,57 +407,55 @@ Try
                                 $VirtualMachine | Stop-AzureVM -Force
                             }
 	                    }
-
                         # Otherwise, current power state is correct
                         else
                         {
                             Write-Output "[$($VirtualMachine.Name)]: Current power state [$($VirtualMachine.PowerState)] is correct."
                         }
-                        #End of assert classic replace
                     }
                     elseif($VirtualMachine.ResourceType -eq "Microsoft.Compute/virtualMachines")
                     {
-                        #Start of assert ARM replace
-                        #Get VM with current status
-                        $resourceManagerVM = Get-AzureRmVM -ResourceGroupName $VirtualMachine.ResourceGroupName -Name $VirtualMachine.Name -Status
-                        $currentStatus = $resourceManagerVM.Statuses | where Code -like "PowerState*" 
-                        $currentStatus = $currentStatus.Code -replace "PowerState/",""
+                    InlineScript{
 
-                        # If should be started and isn't, start VM
-	                    if($DesiredState -eq "Started" -and $currentStatus -notmatch "running")
-	                    {
-                            if($Simulate)
-                            {
-                                Write-Output "[$($VirtualMachine.Name)]: SIMULATION -- Would have started VM. (No action taken)"
-                            }
+                            #Get VM with current status
+                            $VirtualMachine = $using:VirtualMachine
+                            $DesiredState = $using:DesiredState
+                            $resourceManagerVM = Get-AzureRmVM -ResourceGroupName $VirtualMachine.ResourceGroupName -Name $VirtualMachine.Name -Status
+                            $currentStatus = $resourceManagerVM.Statuses | where Code -like "PowerState*" 
+                            $currentStatus = $currentStatus.Code -replace "PowerState/",""
+                        
+                            # If should be started and isn't, start VM
+	                        if($DesiredState -eq "Started" -and $currentStatus -notmatch "running")
+	                        {
+                                if($Simulate)
+                                {
+                                    Write-Output "[$($VirtualMachine.Name)]: SIMULATION -- Would have started VM. (No action taken)"
+                                }
+                                else
+                                {
+                                    Write-Output "[$($VirtualMachine.Name)]: Starting VM"
+                                    $resourceManagerVM | Start-AzureRmVM
+                                }
+	                        }
+	                        # If should be stopped and isn't, stop VM
+	                        elseif($DesiredState -eq "StoppedDeallocated" -and $currentStatus -ne "deallocated")
+	                        {
+                                if($Simulate)
+                                {
+                                    Write-Output "[$($VirtualMachine.Name)]: SIMULATION -- Would have stopped VM. (No action taken)"
+                                }
+                                else
+                                {
+                                    Write-Output "[$($VirtualMachine.Name)]: Stopping VM"
+                                    $resourceManagerVM | Stop-AzureRmVM -Force
+                                }
+	                        }
+                            # Otherwise, current power state is correct
                             else
                             {
-                                Write-Output "[$($VirtualMachine.Name)]: Starting VM"
-                                $resourceManagerVM | Start-AzureRmVM
+                                Write-Output "[$($VirtualMachine.Name)]: Current power state [$currentStatus] is correct."
                             }
-	                    }
-		
-	                    # If should be stopped and isn't, stop VM
-	                    elseif($DesiredState -eq "StoppedDeallocated" -and $currentStatus -ne "deallocated")
-	                    {
-                            if($Simulate)
-                            {
-                                Write-Output "[$($VirtualMachine.Name)]: SIMULATION -- Would have stopped VM. (No action taken)"
-                            }
-                            else
-                            {
-                                Write-Output "[$($VirtualMachine.Name)]: Stopping VM"
-                                $resourceManagerVM | Stop-AzureRmVM -Force
-                            }
-	                    }
-
-                        # Otherwise, current power state is correct
-                        else
-                        {
-                            Write-Output "[$($VirtualMachine.Name)]: Current power state [$currentStatus] is correct."
                         }
-
-                        #End of assert ARM replace
                     }
                     else
                     {
