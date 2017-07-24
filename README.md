@@ -19,8 +19,9 @@
 
     - Tag name : autoShutdownSchedule
     - Tag value (example): 5pm -> 8am, Saturday, Sunday
-        The tag value corresponds to the time frame when the VM should be STOPPED. You can either set a full day (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday), or if the day is not set, the time frame when the VM should not be running.
-        In this example, the VM will be stopped every day at 5pm and restarted the day after at 8am, and will be stopped all day on Saturdays and Sundays.
+  
+  The tag value corresponds to the time frame when the VM should be STOPPED. You can either set a full day (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday), or if the day is not set, the time frame when the VM should not be running.
+  In this example, the VM will be stopped every day at 5pm and restarted the day after at 8am, and will be stopped all day on Saturdays and Sundays.
   
   IMPORTANT : Any untagged VM will be ignored by the script
 
