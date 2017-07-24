@@ -69,8 +69,8 @@
 
 .NOTES
    AUTHOR: Baptiste Ohanes, Microsoft Field Engineer 
-   LASTEDIT: July 7, 2017
-   VERSION: 0.9.9 - Beta
+   LASTEDIT: July 24th, 2017
+   VERSION: 1.0.0 - RTW
 
 .DISCLAIMER
 
@@ -92,7 +92,7 @@ workflow StartStopVMbyTag {
         [bool]$Simulate = $false
     )
 
-    $VERSION = "0.9.9 - Beta"
+    $VERSION = "1.0.0 - RTW"
 
     Try {
         $currentTime = (Get-Date).ToUniversalTime()
