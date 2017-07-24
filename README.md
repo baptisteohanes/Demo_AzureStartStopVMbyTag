@@ -39,11 +39,11 @@
     You can use the default one created by the Azure Automation account or create a new one
 
   3. 4 optional but recommended automation variables, that points to default execution parameters if not set.
-     Those variable are used for flexibility only since if the parameters are specified, they are not used/called at all.
-        a."Default ARM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ARM (cf.[1])
-        b."Default ASM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ASM (cf.[2])
-        c."Default Subscription ID", a string storing the default subscription ID used if not subscription ID is specified at execution
-        d."Default Subscription Name", a string storing the default subscription name used if not subscription name is specified at execution (it must corresponds to the subscription ID above)
+     Those variable are used for flexibility only since if the parameters are specified, they are not used/called at all.<br/>
+        a."Default ARM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ARM (cf.[1])<br/>
+        b."Default ASM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ASM (cf.[2])<br/>
+        c."Default Subscription ID", a string storing the default subscription ID used if not subscription ID is specified at execution<br/>
+        d."Default Subscription Name", a string storing the default subscription name used if not subscription name is specified at execution (it must corresponds to the subscription ID above)<br/>
 
  ## PARAMETER azureARMConnectionName
    STRING, Optional with default of "Use *Default ARM Connection* Asset". If not specified at execution, ensure that you created and set the value of the corresponding variable.
