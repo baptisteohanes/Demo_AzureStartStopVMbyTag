@@ -30,44 +30,42 @@
 
  # REQUIRED AUTOMATION ASSETS
 
-  1. An ARM connection to the subscription
+  1. **An ARM connection to the subscription**
 
     You can use the default one created by the Azure Automation account or create a new one
 
-  2. AN ASM connection to the subscription
+  2. **AN ASM connection to the subscription**
 
     You can use the default one created by the Azure Automation account or create a new one
 
-  3. 4 optional but recommended automation variables, that points to default execution parameters if not set.
-     Those variable are used for flexibility only since if the parameters are specified, they are not used/called at all.<br/>
-        a."Default ARM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ARM (cf.[1])<br/>
-        b."Default ASM Credential", a string storing the name of the Azure Automation Connection asset used to connect to the sub using ASM (cf.[2])<br/>
-        c."Default Subscription ID", a string storing the default subscription ID used if not subscription ID is specified at execution<br/>
-        d."Default Subscription Name", a string storing the default subscription name used if not subscription name is specified at execution (it must corresponds to the subscription ID above)<br/>
+  3. **4 optional but recommended automation variables**, that points to default execution parameters if not set.Those variable are used for flexibility only since if the parameters are specified, they are not used/called at all:  
+        a.**"Default ARM Credential"**, a string storing the name of the Azure Automation Connection asset used to connect to the sub using ARM (cf.[1])  
+        b.**"Default ASM Credential"**, a string storing the name of the Azure Automation Connection asset used to connect to the sub using ASM (cf.[2])  
+        c.**"Default Subscription ID"**, a string storing the default subscription ID used if not subscription ID is specified at execution.  
+        d.**"Default Subscription Name"**, a string storing the default subscription name used if not subscription name is specified at execution (it must corresponds to the subscription ID above)  
 
  ## PARAMETER azureARMConnectionName
-   STRING, Optional with default of "Use *Default ARM Connection* Asset". If not specified at execution, ensure that you created and set the value of the corresponding variable.
+   *STRING, Optional with default of "Use *Default ARM Connection* Asset".*  If not specified at execution, ensure that you created and set the value of the corresponding variable.
    The name of an Automation variable asset storing the name of the Azure Automation Service Principal Connection asset used to connect to the sub using ARM. 
    To use a different Service Principal Connection asset, directly pass the name of the specific Service Principal Connection as a runbook input parameter or change the default value for the input parameter.
 
  ## PARAMETER azureASMConnectionName
-   STRING, Optional with default of "Use *Default ASM Connection* Asset".If not specified at execution, ensure that you created and set the value of the corresponding variable.
+   *STRING, Optional with default of "Use *Default ASM Connection* Asset".*  If not specified at execution, ensure that you created and set the value of the corresponding variable.
    The name of an Automation variable asset storing the name of the Azure Automation Classic Certificate Connection asset used to connect to the sub using ASM. 
    To use a different Classic Certificate Connection asset, directly pass the name of the specific Classic Certificate Connection as a runbook input parameter or change the default value for the input parameter.
 
  ## PARAMETER AzureSubscriptionName
-   STRING, Optional with default of "Use *Default Subscription Name* Variable Value". If not specified at execution, ensure that you created and set the value of the corresponding variable.
+   *STRING, Optional with default of "Use *Default Subscription Name* Variable Value".*  If not specified at execution, ensure that you created and set the value of the corresponding variable.
    The name of An Automation variable asset storing the default subscription name used if not subscription name is specified at execution (it must corresponds to the subscription ID below).
    To use a subscription with a different name, you can pass the sub name (which will be the name of the subscription you want to target) as a runbook input parameter or change the default value for the input parameter.
 
  ## PARAMETER AzureSubscriptionID
-   STRING, Optional with default of "Use *Default Subscription ID* Variable Value". If not specified at execution, ensure that you created and set the value of the corresponding variable.
+  *STRING, Optional with default of "Use *Default Subscription ID* Variable Value"*.  If not specified at execution, ensure that you created and set the value of the corresponding variable.
    The name of An Automation variable asset storing the default subscription ID used if not subscription ID is specified at execution (it must corresponds to the subscription Name above).
    To use a subscriptio with a different ID you can pass the sub ID (which will be the ID of the subscription you want to target) as a runbook input parameter or change the default value for the input parameter.
 
  ## PARAMETER Simulate
-   BOOLEAN, Optional with default of "False".
-   Sets if the VM are effectively started and stopped, or if we only check if the should be started or stopped (test mode).
+  *BOOLEAN, Optional with default of "False"*.  Sets if the VM are effectively started and stopped, or if we only check if the should be started or stopped (test mode).
 
  # NOTES
    AUTHOR: Baptiste Ohanes, Microsoft Field Engineer 
